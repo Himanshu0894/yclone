@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<style>
+    *{
+        margin:0
+    }
+    body{
+        background-color: lightgrey;
+    }
+   
+    nav{
+        width:100vw;
+        height:90px;
+        /* border:1px solid black; */
+        background-color: whitesmoke;
+        display: flex;
+      
+    }
+    #logo{
+        width:200px;
+        height:70px;
+        margin-top: 10px;;
+        margin-left: 20px;
+        margin-bottom: 10px;;
+    }
+    #query{
+        width: 420px;
+           height: 40px;
+           margin-top: 20px;
+          margin-bottom: 5px;
+         margin-left: 280px;
+    }
+    button{
+        width:100px;
+        height:45px;
+        margin-left:-6px;
+        /* border: none; */
+        background-color: red;
+        color: white;
+    }
+    #videos{
+           display: grid;
+           grid-gap: 80px;
+           grid-template-columns: 20% 20% 20% 20%;
+          /* margin-top: 20px; */
+         padding: 50px;
+
+       }
+       /* .display{
+          
+           width: 300px;
+       } */
+</style>
+<body>
+  
+     <nav>
+         <div id="icon">
+            <img src="logo.jpg" alt="" id="logo">
+         </div>
+         <div>
+         <input type="text" placeholder="Search" id="query">
+         <button onclick="searchvideos()">Search</button>
+         </div>
+     </nav>
+
+     <div id="videos"></div>
+   
+</body>
+</html>
+
+<script>
+//here searching of videos happen
+let videos_div = document.getElementById("videos")
+
+async function searchvideos(){
+
+    try{
+    let query  = document.getElementById("query").value
+    console.log(query)
+   let res = await fetch(`https://youtube.googleapis.com/youtube/v3/search?q=${query}&key=AIzaSyBKHcNksIRrrc0-fugLl1HjwHkFMG83izA&maxResults=20`)
+    let data = await res.json()
+
+    // console.log(data.items)
+    appendvideos1(data.items)
+    }
+    catch(e){
+        console.log(e)
+    }
+}
+// searchvideos()
+
+function appendvideos1(video_data){
+    videos_div.innerHTML = null
+    video_data.forEach(( { id: { videoId } } ) => {
+        // console.log(videoId)
+
+        let div = document.createElement("div")
+
+        div.innerHTML = `<iframe width="340" height="210" src="https://www.youtube.com/embed/${videoId}" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`
+        videos_div.append(div)
+    })
+}
+
+
+
+
+async function defaultvideos(){
+    let query  = document.getElementById("query").value
+   let res = await fetch('https://youtube.googleapis.com/youtube/v3/videos?part=snippet%2CcontentDetails%2Cstatistics&chart=mostPopular&regionCode=IN&key=AIzaSyBKHcNksIRrrc0-fugLl1HjwHkFMG83izA&maxResults=20')
+
+   let data = await res.json()
+
+//    console.log(data.items)
+appendvideos(data.items)
+    
+}
+
+defaultvideos()
+
+ function appendvideos(video_data){
+    // console.log(id)
+    video_data.forEach( ( {id} ) => {
+        // console.log(id)
+
+        // now appending on webpage
+        let div = document.createElement('div')
+        div.setAttribute("class","display")
+        div.innerHTML=`<iframe src="https://www.youtube.com/embed/${id}" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`
+        // console.log(div)
+        videos_div.append(div)
+
+
+    })
+  
+}
+
+</script>
